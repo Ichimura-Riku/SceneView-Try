@@ -156,7 +156,7 @@ fun ARScreen(
 //        < option >
 //        sessionFeatures = ,
 //        sessionCameraConfig = ,
-//        sessionConfiguration = ,
+        sessionConfiguration = sessionConfiguration,
 //        cameraStream = ,
 //        isOpaque = ,
 //        renderer = ,
