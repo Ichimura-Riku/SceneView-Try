@@ -44,6 +44,7 @@ import io.github.sceneview.rememberOnGestureListener
 import io.github.sceneview.rememberView
 
 private const val kModelFile = "models/1.glb"
+private const val testModelFile = "models/damaged_helmet.glb"
 private const val kMaxModelInstances = 10
 
 class MainActivity : ComponentActivity() {
@@ -201,7 +202,7 @@ fun createAnchorNode(
     val modelNode = ModelNode(
         modelInstance = modelInstances.apply {
             if (isEmpty()) {
-                this += modelLoader.createInstancedModel(kModelFile, kMaxModelInstances)
+                this += modelLoader.createInstancedModel(testModelFile, kMaxModelInstances)
             }
         }.removeLast(),
         // Scale to fit in a 0.5 meters cube
