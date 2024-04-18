@@ -1,6 +1,7 @@
 package com.senmonb.sceneview_tutorial
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,7 @@ import com.google.ar.core.Config
 import com.google.ar.core.Frame
 import com.google.ar.core.Plane
 import com.google.ar.core.Session
+import com.google.ar.core.TrackingFailureReason
 import com.senmonb.sceneview_tutorial.ui.theme.SceneView_tutorialTheme
 import io.github.sceneview.ar.ARScene
 import io.github.sceneview.ar.arcore.createAnchorOrNull
@@ -142,6 +144,15 @@ fun ARScreen(
             }
         })
 
+    var trackingFailureReason by remember {
+        mutableStateOf<TrackingFailureReason?>(null)
+    }
+
+    val onTrackingFailureChanged: (trackingFailureReason: TrackingFailureReason?) -> Unit = {
+        Log.d("debug-----", "$it")
+        trackingFailureReason = it
+    }
+
     ARScene(
         modifier = Modifier.fillMaxSize(),
         engine = engine,
@@ -169,7 +180,7 @@ fun ARScreen(
 //        onSessionResumed = ,
 //        onSessionPaused = ,
 //        onSessionFailed = ,
-//        onTrackingFailureChanged = ,
+        onTrackingFailureChanged = onTrackingFailureChanged,
 //        onTouchEvent = ,
 //        activity = ,
 //        lifecycle = ,
