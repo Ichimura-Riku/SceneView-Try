@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Box(modifier = Modifier.fillMaxSize(),) {
-                        ARScreen("model_path")
+                        ARScreen()
                     }
                 }
             }
@@ -64,21 +64,19 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ARScreen(
-    model: String
-){
-    val nodes = rememberNodes()
+fun ARScreen(){
+
     val engine = rememberEngine()
-    val view = rememberView(engine = engine)
     val modelLoader = rememberModelLoader(engine = engine)
+    var planeRenderer by remember { mutableStateOf(true) }
+    val view = rememberView(engine = engine)
     val cameraNode = rememberARCameraNode(engine = engine)
-    var frame by remember { mutableStateOf<Frame?>(null) }
     val childNodes = rememberNodes()
+    var frame by remember { mutableStateOf<Frame?>(null) }
     val materialLoader = rememberMaterialLoader(engine = engine)
     val modelInstances = remember { mutableListOf<ModelInstance>() }
     val onSessionUpdated: (session: Session, frame: Frame) -> Unit = { session, updatedFrame ->
         frame = updatedFrame
-
         if (childNodes.isEmpty()) {
             updatedFrame.getUpdatedPlanes()
                 .firstOrNull { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
@@ -92,31 +90,6 @@ fun ARScreen(
                     )
                 }
         }
-    }
-    var planeRenderer by remember { mutableStateOf(true) }
-
-
-
-    // option
-    /**
-     *  これまだオプションでいい可能性があるので、あとでなしで試してみる
-     *  やっぱオプション確定ですね
-     *  深度取得モード、即時配置モード、光照推定モードなどを設定
-     * */
-    val sessionConfiguration: (session: Session, Config) -> Unit = { session, config ->
-        // ここで深度情報を取得できるかの条件分岐をしていて、
-        // trueの場合は自動的に快適な深度モードを選択するようになる
-        config.depthMode =
-            when (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
-                true -> Config.DepthMode.AUTOMATIC
-                else -> Config.DepthMode.DISABLED
-            }
-        // ここで即時配置の設定をしているらしい。もしかしたらこれはいらない可能性ある
-        config.instantPlacementMode = Config.InstantPlacementMode.LOCAL_Y_UP
-
-        // ここで光照推定モードを設定しているらしい
-        config.lightEstimationMode =
-            Config.LightEstimationMode.ENVIRONMENTAL_HDR
     }
 
     val onGestureListener = rememberOnGestureListener(
@@ -142,21 +115,37 @@ fun ARScreen(
             }
         })
 
+
+    // option
+    /**
+     *  深度取得モード、即時配置モード、光照推定モードなどを設定
+     * */
+    val sessionConfiguration: (session: Session, Config) -> Unit = { session, config ->
+        config.depthMode =
+            when (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
+                true -> Config.DepthMode.AUTOMATIC
+                else -> Config.DepthMode.DISABLED
+            }
+        config.instantPlacementMode = Config.InstantPlacementMode.LOCAL_Y_UP
+        config.lightEstimationMode =
+            Config.LightEstimationMode.ENVIRONMENTAL_HDR
+    }
+
     ARScene(
         modifier = Modifier.fillMaxSize(),
         engine = engine,
-        childNodes = nodes,
-        view = view,
         modelLoader = modelLoader,
-        cameraNode = cameraNode,
-        onSessionUpdated = onSessionUpdated,
         planeRenderer = planeRenderer,
+        view = view,
+        cameraNode = cameraNode,
+        childNodes = childNodes,
+        onSessionUpdated = onSessionUpdated,
         onGestureListener = onGestureListener,
 
 //        < option >
 //        sessionFeatures = ,
 //        sessionCameraConfig = ,
-//        sessionConfiguration = ,
+        sessionConfiguration = sessionConfiguration,
 //        cameraStream = ,
 //        isOpaque = ,
 //        renderer = ,
@@ -169,7 +158,7 @@ fun ARScreen(
 //        onSessionResumed = ,
 //        onSessionPaused = ,
 //        onSessionFailed = ,
-//        onTrackingFailureChanged = ,
+//        onTrackingFailureChanged ,
 //        onTouchEvent = ,
 //        activity = ,
 //        lifecycle = ,
