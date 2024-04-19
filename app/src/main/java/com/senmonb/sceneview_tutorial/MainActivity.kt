@@ -135,6 +135,7 @@ fun ARScreen(){
         modifier = Modifier.fillMaxSize(),
         engine = engine,
         modelLoader = modelLoader,
+        sessionConfiguration = sessionConfiguration,
         planeRenderer = planeRenderer,
         view = view,
         cameraNode = cameraNode,
@@ -145,7 +146,6 @@ fun ARScreen(){
 //        < option >
 //        sessionFeatures = ,
 //        sessionCameraConfig = ,
-        sessionConfiguration = sessionConfiguration,
 //        cameraStream = ,
 //        isOpaque = ,
 //        renderer = ,
