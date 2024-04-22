@@ -41,7 +41,7 @@ import io.github.sceneview.rememberNodes
 import io.github.sceneview.rememberOnGestureListener
 import io.github.sceneview.rememberView
 
-private const val kModelFile = "models/1.glb"
+private const val kModelFile = "models/square.glb"
 private const val kMaxModelInstances = 10
 
 class MainActivity : ComponentActivity() {
